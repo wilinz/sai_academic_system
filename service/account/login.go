@@ -53,5 +53,11 @@ func HandleLogin(c *gin.Context, username string) {
 		return
 	}
 
-	service.HttpOK(c)
+	var user model.User
+	db.Mysql.Where(map[any]any{"username": username}).First(&user)
+	c.JSON(200, model.JsonResponse{
+		Code: 200,
+		Msg:  "ok",
+		Data: user.UserInfoReadOnly,
+	})
 }

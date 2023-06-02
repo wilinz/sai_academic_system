@@ -24,7 +24,7 @@ func IsPasswordCorrect(c *gin.Context, username string, password string) bool {
 		c.JSON(200, model.JsonResponse{
 			Code: error_code.RequestTooFrequent,
 			Msg:  "请求过于频繁",
-			Data: ttl,
+			Data: ttl / time.Second,
 		})
 		return false
 	}

@@ -37,19 +37,10 @@ func InitMySql(mysqlConfig MysqlConfig) {
 	if err != nil {
 		panic(err)
 	}
-	err = Mysql.AutoMigrate(&model.Picture{})
-	err = Mysql.AutoMigrate(&model.Address{})
-	err = Mysql.AutoMigrate(&model.ExpressOrder{})
-	err = Mysql.AutoMigrate(&model.University{})
-
-	err = Mysql.AutoMigrate(&model.Order{})
-	err = Mysql.AutoMigrate(&model.ExpressOrder{})
-	err = Mysql.AutoMigrate(&model.TakeawayOrder{})
-	err = Mysql.AutoMigrate(&model.PrintOrder{})
-	err = Mysql.AutoMigrate(&model.OtherOrder{})
-	err = Mysql.AutoMigrate(&model.Bill{})
 	err = Mysql.AutoMigrate(&model.Feedback{})
 	err = Mysql.AutoMigrate(&model.AppVersion{})
+	err = Mysql.AutoMigrate(&model.Student{})
+	err = Mysql.AutoMigrate(&model.Course{})
 	if err != nil {
 		panic(err)
 	}

@@ -5,8 +5,10 @@ import (
 	"server_template/common"
 	"server_template/service/account"
 	"server_template/service/appversion"
+	"server_template/service/course"
 	"server_template/service/feedback"
 	"server_template/service/proxy"
+	"server_template/service/student"
 	"server_template/service/welcome"
 )
 
@@ -22,7 +24,7 @@ func Run() {
 	accountRouter := r.Group("/account")
 	accountRouter.POST("/login", account.LoginHandler)
 	accountRouter.POST("/login_with_code", account.LoginWithCodeHandler)
-	accountRouter.POST("/register", account.RegisterHandler)
+	//accountRouter.POST("/register", account.RegisterHandler)
 	accountRouter.POST("/verify", account.VerificationCodeHandler)
 	accountRouter.PUT("/password/reset", account.ResetPasswordHandler)
 	accountRouter.PUT("/password/change", account.ChangePasswordHandler)
@@ -37,6 +39,18 @@ func Run() {
 	r.GET("/app_version", appversion.GetAppVersion)
 
 	r.Any("/proxy", proxy.HttpProxyHandler)
+
+	r.GET("/student", student.GetStudent)
+	r.GET("/students", student.GetStudents)
+	r.DELETE("/student", student.DeleteStudent)
+	r.PUT("/student", student.UpdateStudent)
+	r.POST("/student", student.AddStudent)
+
+	r.GET("/course", course.GetCourse)
+	r.GET("/courses", course.GetCourses)
+	r.DELETE("/course", course.DeleteCourse)
+	r.PUT("/course", course.UpdateCourse)
+	r.POST("/course", course.AddCourse)
 
 	err := r.Run(":10011")
 	if err != nil {
