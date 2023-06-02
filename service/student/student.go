@@ -62,7 +62,7 @@ func UpdateStudent(c *gin.Context) {
 		return
 	}
 
-	service.HttpOK1(c, student)
+	service.HttpOK(c)
 }
 
 // 删除学生信息
