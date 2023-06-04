@@ -15,11 +15,11 @@
       <jdbc-url>jdbc:mariadb://hw.wilinz.com:3306/loginsystem</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="@hk1.wilinz.com" uuid="d42c8c8a-668d-4e73-b6ba-ffd3e1c2bea8">
+    <data-source source="LOCAL" name="@hk.wilinz.com" uuid="d42c8c8a-668d-4e73-b6ba-ffd3e1c2bea8">
       <driver-ref>mariadb</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mariadb://hk1.wilinz.com:3306</jdbc-url>
+      <jdbc-url>jdbc:mariadb://hk.wilinz.com:3306</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
     <data-source source="LOCAL" name="loginsystem@hk1.wilinz.com" uuid="f855ad87-c684-4b11-8dc5-af47670e0bd3">

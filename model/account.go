@@ -1,6 +1,9 @@
 package model
 
-import "server_template/mytime"
+import (
+	"database/sql"
+	"server_template/mytime"
+)
 
 type User struct {
 	ID int64 `gorm:"id" json:"id"`
@@ -22,11 +25,11 @@ type UserInfo struct {
 }
 
 type UserInfoReadOnly struct {
-	Email    string `gorm:"email;type:varchar(255)" json:"email"`
-	Phone    string `gorm:"phone;type:varchar(25)" json:"phone"`
-	Username string `gorm:"column:username;unique;type:varchar(255)" json:"username"`
-	Gender   string `gorm:"gender;type:char(1)" json:"gender"`
-	IsAdmin  *bool  `gorm:"is_admin" json:"is_admin"`
+	Email    string       `gorm:"email;type:varchar(255)" json:"email"`
+	Phone    string       `gorm:"phone;type:varchar(25)" json:"phone"`
+	Username string       `gorm:"column:username;unique;type:varchar(255)" json:"username"`
+	Gender   string       `gorm:"gender;type:char(1)" json:"gender"`
+	IsAdmin  sql.NullBool `gorm:"is_admin" json:"is_admin"`
 	UserInfo
 }
 
@@ -44,6 +47,7 @@ type RegistrationParameters struct {
 	Username         string `json:"username" binding:"required"`
 	Password         string `json:"password" binding:"required"`
 	VerificationCode string `json:"code" binding:"required"`
+	StudentNo        string `json:"student_no" binding:"required"`
 }
 
 type VerificationParameters struct {

@@ -1,7 +1,9 @@
 package account
 
 import (
+	"database/sql"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"server_template/constant/code_type"
 	"server_template/constant/error_code"
 	"server_template/db"
@@ -23,6 +25,27 @@ func RegisterHandler(c *gin.Context) {
 	}
 
 	if IsAccountExists(c, p.Username) {
+		return
+	}
+
+	//检查学号是否存在
+	var student model.Student
+	err = db.Mysql.Model(model.Student{}).Where(map[string]any{"student_no": p.StudentNo}).First(&student).Error
+	if gorm.ErrRecordNotFound == err {
+		c.JSON(200, model.JsonResponse{
+			Code: error_code.StudentNotExist,
+			Msg:  "该学生不存在，请联系管理员添加您的学生信息",
+			Data: nil,
+		})
+		return
+	}
+
+	if len(student.Username.String) != 0 {
+		c.JSON(200, model.JsonResponse{
+			Code: error_code.StudentAssociated,
+			Msg:  "该学生已被注册关联，请联系管理员处理",
+			Data: nil,
+		})
 		return
 	}
 
@@ -48,7 +71,22 @@ func RegisterHandler(c *gin.Context) {
 			return
 		}
 
-		db.Mysql.Create(&user)
+		student.Username = sql.NullString{
+			String: p.Username,
+			Valid:  true,
+		}
+		user.StudentNo = p.StudentNo
+
+		err := db.Mysql.Transaction(func(tx *gorm.DB) error {
+			err2 := tx.Updates(&student).Error
+			err2 = tx.Create(&user).Error
+			return err2
+		})
+
+		if err != nil {
+			service.HttpServerInternalError(c)
+			return
+		}
 		service.HttpOK(c)
 	}
 

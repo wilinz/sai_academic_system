@@ -157,3 +157,43 @@ func isLogged(c *gin.Context) (bool, string, error) {
 	var username, exist = session.Values["username"].(string)
 	return exist, username, err
 }
+
+func GetUserByUsername(username string) (model.User, error) {
+	var user model.User
+	err := db.Mysql.Model(model.User{}).Where(map[any]any{"username": username}).First(&user).Error
+	return user, err
+}
+
+func IsAdmin(c *gin.Context) (bool, string) {
+	logged, username := IsLogged(c)
+	if !logged {
+		return false, username
+	}
+	user, _ := GetUserByUsername(username)
+	if !(user.IsAdmin.Valid && user.IsAdmin.Bool) {
+		c.JSON(200, model.JsonResponse{
+			Code: error_code.Unverified,
+			Msg:  "您不是管理员，没有此权限",
+			Data: nil,
+		})
+		return false, username
+	}
+	return true, username
+}
+
+func IsAdmin1(c *gin.Context) (isAdmin bool, user *model.User) {
+	logged, username := IsLogged(c)
+	if !logged {
+		return false, nil
+	}
+	user1, _ := GetUserByUsername(username)
+	if !(user.IsAdmin.Valid && user.IsAdmin.Bool) {
+		c.JSON(200, model.JsonResponse{
+			Code: error_code.Unverified,
+			Msg:  "您不是管理员，没有此权限",
+			Data: nil,
+		})
+		return false, &user1
+	}
+	return true, nil
+}

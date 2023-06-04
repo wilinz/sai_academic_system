@@ -16,4 +16,6 @@ const (
 	ContentLengthIsTooBig = 10013
 	NotFound              = 10014
 	PaymentFailed         = 10015
+	StudentNotExist       = 10016
+	StudentAssociated     = 10017
 )

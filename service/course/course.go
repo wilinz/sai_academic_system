@@ -1,14 +1,21 @@
 package course
 
 import (
+	"database/sql"
 	"github.com/gin-gonic/gin"
 	"server_template/db"
 	"server_template/model"
 	"server_template/service"
+	"server_template/service/account"
 )
 
 // AddCourse 添加学生信息
 func AddCourse(c *gin.Context) {
+	isAdmin, _ := account.IsAdmin(c)
+	if !isAdmin {
+		return
+	}
+
 	var course model.Course
 	if err := c.BindJSON(&course); err != nil {
 		service.HttpParameterError(c)
@@ -25,6 +32,11 @@ func AddCourse(c *gin.Context) {
 
 // GetCourses 获取所有学生信息
 func GetCourses(c *gin.Context) {
+	isAdmin, _ := account.IsAdmin(c)
+	if !isAdmin {
+		return
+	}
+
 	var courses []model.Course
 
 	if err := db.Mysql.Find(&courses).Error; err != nil {
@@ -37,6 +49,11 @@ func GetCourses(c *gin.Context) {
 
 // GetCourse 获取学生信息
 func GetCourse(c *gin.Context) {
+	isAdmin, _ := account.IsAdmin(c)
+	if !isAdmin {
+		return
+	}
+
 	var course model.Course
 	id := c.Query("id")
 
@@ -50,12 +67,20 @@ func GetCourse(c *gin.Context) {
 
 // UpdateCourse 更新学生信息
 func UpdateCourse(c *gin.Context) {
+	isAdmin, _ := account.IsAdmin(c)
+	if !isAdmin {
+		return
+	}
+
 	var course model.Course
 
 	if err := c.BindJSON(&course); err != nil {
 		service.HttpParameterError(c)
 		return
 	}
+
+	//设为零值
+	course.Selected = 0
 
 	if err := db.Mysql.Updates(&course).Error; err != nil {
 		service.HttpServerInternalError(c)
@@ -68,6 +93,11 @@ func UpdateCourse(c *gin.Context) {
 // 删除学生信息
 
 func DeleteCourse(c *gin.Context) {
+	isAdmin, _ := account.IsAdmin(c)
+	if !isAdmin {
+		return
+	}
+
 	var course model.Course
 	id := c.Query("id")
 
@@ -82,4 +112,31 @@ func DeleteCourse(c *gin.Context) {
 	}
 
 	service.HttpOK(c)
+}
+
+func GetSelectableCourse(c *gin.Context) {
+	//logged, _ := account.IsLogged(c)
+	//if !logged {
+	//	return
+	//}
+
+	var student model.Student
+	student.Username = sql.NullString{
+		String: "3397733901@qq.com",
+		Valid:  true,
+	}
+	err := db.Mysql.Where(map[string]any{"username": student.Username}).First(&student).Error
+	if err != nil {
+		service.HttpServerInternalError(c)
+		return
+	}
+
+	var courses []model.Course
+	err = db.Mysql.Where("grade = ? AND selected < capacity", student.Grade).Find(&courses).Error
+	if err != nil {
+		service.HttpServerInternalError(c)
+		return
+	}
+
+	service.HttpOK1(c, courses)
 }

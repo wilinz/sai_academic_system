@@ -5,6 +5,7 @@ import (
 	"server_template/common"
 	"server_template/service/account"
 	"server_template/service/appversion"
+	"server_template/service/bing"
 	"server_template/service/course"
 	"server_template/service/feedback"
 	"server_template/service/proxy"
@@ -24,7 +25,7 @@ func Run() {
 	accountRouter := r.Group("/account")
 	accountRouter.POST("/login", account.LoginHandler)
 	accountRouter.POST("/login_with_code", account.LoginWithCodeHandler)
-	//accountRouter.POST("/register", account.RegisterHandler)
+	accountRouter.POST("/register", account.RegisterHandler)
 	accountRouter.POST("/verify", account.VerificationCodeHandler)
 	accountRouter.PUT("/password/reset", account.ResetPasswordHandler)
 	accountRouter.PUT("/password/change", account.ChangePasswordHandler)
@@ -47,10 +48,13 @@ func Run() {
 	r.POST("/student", student.AddStudent)
 
 	r.GET("/course", course.GetCourse)
+	r.GET("/course/selectable", course.GetSelectableCourse)
 	r.GET("/courses", course.GetCourses)
 	r.DELETE("/course", course.DeleteCourse)
 	r.PUT("/course", course.UpdateCourse)
 	r.POST("/course", course.AddCourse)
+
+	r.GET("/bing/daily_image", bing.GetDailyImage)
 
 	err := r.Run(":10011")
 	if err != nil {
