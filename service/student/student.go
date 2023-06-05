@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"server_template/base_type"
 	"server_template/db"
 	"server_template/model"
 	"server_template/service"
@@ -100,10 +101,11 @@ func DeleteStudent(c *gin.Context) {
 
 	err := db.Mysql.Transaction(func(tx *gorm.DB) error {
 		var student model.Student
-		student.Username = sql.NullString{
-			String: "3397733901@qq.com",
-			Valid:  true,
-		}
+		student.Username = base_type.NullableString{
+			NullString: sql.NullString{
+				String: id,
+				Valid:  true,
+			}}
 		err1 := tx.Model(model.Student{}).First(&student, id).Error
 		err1 = tx.Delete(&student).Error
 		err1 = tx.Delete(&model.User{}, map[string]any{"username": student.Username}).Error

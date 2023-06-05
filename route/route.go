@@ -7,6 +7,7 @@ import (
 	"server_template/service/appversion"
 	"server_template/service/bing"
 	"server_template/service/course"
+	"server_template/service/course_select"
 	"server_template/service/feedback"
 	"server_template/service/proxy"
 	"server_template/service/student"
@@ -55,6 +56,11 @@ func Run() {
 	r.POST("/course", course.AddCourse)
 
 	r.GET("/bing/daily_image", bing.GetDailyImage)
+
+	r.POST("/course/select", course_select.SelectCourse)
+	r.DELETE("/course/unselect", course_select.DropCourse)
+	r.GET("/course/selected", course_select.GetSelectedCourses)
+	r.GET("/course/selected/admin", course_select.GetCourseSelections)
 
 	err := r.Run(":10011")
 	if err != nil {

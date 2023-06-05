@@ -1,7 +1,7 @@
 package model
 
 import (
-	"database/sql"
+	"server_template/base_type"
 	"server_template/mytime"
 )
 
@@ -25,11 +25,11 @@ type UserInfo struct {
 }
 
 type UserInfoReadOnly struct {
-	Email    string       `gorm:"email;type:varchar(255)" json:"email"`
-	Phone    string       `gorm:"phone;type:varchar(25)" json:"phone"`
-	Username string       `gorm:"column:username;unique;type:varchar(255)" json:"username"`
-	Gender   string       `gorm:"gender;type:char(1)" json:"gender"`
-	IsAdmin  sql.NullBool `gorm:"is_admin" json:"is_admin"`
+	Email    string                 `gorm:"email;type:varchar(255)" json:"email"`
+	Phone    string                 `gorm:"phone;type:varchar(25)" json:"phone"`
+	Username string                 `gorm:"column:username;unique;type:varchar(255)" json:"username"`
+	Gender   string                 `gorm:"gender;type:char(1)" json:"gender"`
+	IsAdmin  base_type.NullableBool `gorm:"is_admin" json:"is_admin"`
 	UserInfo
 }
 

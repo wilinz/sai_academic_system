@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"server_template/base_type"
 	"server_template/constant/code_type"
 	"server_template/constant/error_code"
 	"server_template/db"
@@ -71,9 +72,11 @@ func RegisterHandler(c *gin.Context) {
 			return
 		}
 
-		student.Username = sql.NullString{
-			String: p.Username,
-			Valid:  true,
+		student.Username = base_type.NullableString{
+			NullString: sql.NullString{
+				String: p.Username,
+				Valid:  true,
+			},
 		}
 		user.StudentNo = p.StudentNo
 

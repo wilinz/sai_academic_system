@@ -41,6 +41,7 @@ func InitMySql(mysqlConfig MysqlConfig) {
 	err = Mysql.AutoMigrate(&model.AppVersion{})
 	err = Mysql.AutoMigrate(&model.Student{})
 	err = Mysql.AutoMigrate(&model.Course{})
+	err = Mysql.AutoMigrate(&model.CourseSelection{})
 	if err != nil {
 		panic(err)
 	}

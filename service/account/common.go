@@ -164,6 +164,12 @@ func GetUserByUsername(username string) (model.User, error) {
 	return user, err
 }
 
+func GetStudentByUsername(username string) (model.Student, error) {
+	var student model.Student
+	err := db.Mysql.Model(model.Student{}).Where(map[any]any{"username": username}).First(&student).Error
+	return student, err
+}
+
 func IsAdmin(c *gin.Context) (bool, string) {
 	logged, username := IsLogged(c)
 	if !logged {

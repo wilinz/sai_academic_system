@@ -1,7 +1,6 @@
 package course
 
 import (
-	"database/sql"
 	"github.com/gin-gonic/gin"
 	"server_template/db"
 	"server_template/model"
@@ -115,25 +114,29 @@ func DeleteCourse(c *gin.Context) {
 }
 
 func GetSelectableCourse(c *gin.Context) {
-	//logged, _ := account.IsLogged(c)
-	//if !logged {
-	//	return
-	//}
+	logged, username := account.IsLogged(c)
+	if !logged {
+		return
+	}
 
 	var student model.Student
-	student.Username = sql.NullString{
-		String: "3397733901@qq.com",
-		Valid:  true,
-	}
-	err := db.Mysql.Where(map[string]any{"username": student.Username}).First(&student).Error
-	if err != nil {
+	if err := db.Mysql.Where("username = ?", username).First(&student).Error; err != nil {
 		service.HttpServerInternalError(c)
 		return
 	}
 
+	subQuery := db.Mysql.Table("course_selections").
+		Where("course_selections.course_id = courses.id").
+		Where("course_selections.student_id = ?", student.ID).
+		Where("course_selections.deleted_at IS NULL").
+		Select("1")
+
 	var courses []model.Course
-	err = db.Mysql.Where("grade = ? AND selected < capacity", student.Grade).Find(&courses).Error
-	if err != nil {
+	if err := db.Mysql.
+		Where("capacity > selected").
+		Where("NOT EXISTS (?)", subQuery).
+		Where("deleted_at IS NULL").
+		Find(&courses).Error; err != nil {
 		service.HttpServerInternalError(c)
 		return
 	}
